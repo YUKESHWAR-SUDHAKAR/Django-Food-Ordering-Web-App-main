@@ -1,0 +1,74 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-location-dot"></i> Delivery tracking</span>
+      <h1 class="mt-3 mb-1">Order #{{ order.id }}</h1>
+      <p class="mb-0 subtle">Monitor delivery status, ETA, and the address tied to this order.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="timeline-card p-4 p-lg-5">
+        <h3 class="mb-4">Delivery timeline</h3>
+        <div class="stack-grid">
+          <div class="filter-chip">
+            <strong>Preparing</strong>
+            <div class="subtle">The kitchen is getting your order ready.</div>
+          </div>
+          <div class="filter-chip">
+            <strong>Out for delivery</strong>
+            <div class="subtle">Your order is on the way.</div>
+          </div>
+          <div class="filter-chip">
+            <strong>Delivered</strong>
+            <div class="subtle">The order has reached the destination.</div>
+          </div>
+          {% if delivery.delivery_status == 'Cancelled' %}
+          <div class="filter-chip border-danger">
+            <strong>Cancelled</strong>
+            <div class="subtle">This delivery was cancelled before completion.</div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="summary-card p-4 p-lg-5 mb-4">
+        <h3 class="mb-4">Current status</h3>
+        <div class="summary-row">
+          <span>Delivery</span>
+          <strong>{{ delivery.delivery_status }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Order</span>
+          <strong>{{ order.status }}</strong>
+        </div>
+        {% if delivery.estimated_time %}
+        <div class="summary-row total">
+          <span>ETA</span>
+          <strong>{{ delivery.estimated_time|date:"d M Y, h:i A" }}</strong>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="summary-card p-4 p-lg-5">
+        <h3 class="mb-4">Delivery address</h3>
+        <p class="mb-2">{{ delivery.address }}</p>
+        <p class="subtle mb-3">Pincode: {{ delivery.pincode }}</p>
+        {% if delivery.location_lat and delivery.location_lng %}
+        <div class="filter-chip">
+          <strong>Captured location</strong>
+          <div class="subtle">{{ delivery.location_lat }}, {{ delivery.location_lng }}</div>
+        </div>
+        {% endif %}
+        <a href="{% url 'order_detail' order.id %}" class="btn outline-button w-100 mt-4">Back to order</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

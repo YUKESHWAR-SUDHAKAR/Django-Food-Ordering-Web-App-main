@@ -1,0 +1,103 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-credit-card"></i> Checkout</span>
+      <h1 class="mt-3 mb-1">Confirm delivery and payment</h1>
+      <p class="mb-0 subtle">Secure the order, choose a delivery slot, and validate location before placing it.</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="surface-card p-4 p-lg-5">
+        <h3 class="mb-4">Delivery details</h3>
+        <form method="post">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label class="form-label">Delivery address</label>
+            <textarea class="form-control surface-input" name="address" rows="4" required>{{ profile.default_address }}</textarea>
+          </div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Pincode</label>
+              <input class="form-control surface-input" type="text" id="deliveryPincode" name="pincode" value="{{ profile.pincode }}" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Payment method</label>
+              <select class="form-select surface-input" name="payment_method" required>
+                <option value="">Select payment method</option>
+                {% for code, label in payment_methods %}
+                <option value="{{ code }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Delivery slot</label>
+              <select class="form-select surface-input" id="deliverySlotField" name="delivery_slot">
+                {% for code, label in delivery_slots %}
+                <option value="{{ code }}">{{ label }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 d-none" id="scheduledForWrap">
+              <label class="form-label">Choose date and time</label>
+              <input class="form-control surface-input" type="datetime-local" name="scheduled_for">
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <button class="btn outline-button" type="button" id="detectLocationButton">Use my location</button>
+              {% if zones %}
+              <span class="subtle">{{ zones|length }} configured delivery zone{{ zones|length|pluralize }}</span>
+              {% else %}
+              <span class="subtle">Delivery is currently open to all pincodes.</span>
+              {% endif %}
+            </div>
+            <input type="hidden" name="location_lat" id="locationLat">
+            <input type="hidden" name="location_lng" id="locationLng">
+            <div class="availability-banner unavailable" id="deliveryAvailability">Enter a pincode to check delivery availability.</div>
+          </div>
+
+          <button class="btn brand-button w-100 mt-4" type="submit">Place order</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="summary-card p-4 p-lg-5">
+        <h3 class="mb-4">Order summary</h3>
+        <div class="stack-grid mb-4">
+          {% for item in cart_items %}
+          <div class="d-flex justify-content-between gap-3">
+            <div>
+              <strong>{{ item.product.name }}</strong>
+              <div class="subtle">{{ item.product_qty }} x Rs. {{ item.product.offer_price|floatformat:0 }}</div>
+            </div>
+            <strong>Rs. {{ item.total_price|floatformat:0 }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        {% if coupon %}
+        <div class="filter-chip mb-3">{{ coupon.code }} applied</div>
+        {% endif %}
+        <div class="summary-row">
+          <span>Subtotal</span>
+          <strong>Rs. {{ subtotal_amount|floatformat:0 }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Discount</span>
+          <strong>- Rs. {{ discount_amount|floatformat:0 }}</strong>
+        </div>
+        <div class="summary-row total">
+          <span>Payable total</span>
+          <strong>Rs. {{ total_amount|floatformat:0 }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

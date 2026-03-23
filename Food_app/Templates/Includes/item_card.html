@@ -1,0 +1,28 @@
+<div class="product-card">
+  <a href="{% url 'Product_detail' item.category.food_names item.name %}">
+    <img src="{{ item.display_image }}" alt="{{ item.name }}">
+  </a>
+  <div class="p-3 p-lg-4">
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+      <div>
+        <h5 class="mb-1">{{ item.name }}</h5>
+        {% if show_category %}
+        <p class="subtle mb-0">{{ item.category.food_names }}</p>
+        {% endif %}
+      </div>
+      <span class="rating-pill"><i class="fa-solid fa-star text-warning"></i>{{ item.rating|floatformat:1 }}</span>
+    </div>
+    <p class="subtle mb-3">{{ item.item_description|truncatewords:18 }}</p>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <span class="status-pill">{{ item.veg_non_veg }}</span>
+      <div class="price-row">
+        <span class="old-price">Rs. {{ item.price|floatformat:0 }}</span>
+        <span class="new-price">Rs. {{ item.offer_price|floatformat:0 }}</span>
+      </div>
+    </div>
+    <div class="d-grid gap-2">
+      <a href="{% url 'Product_detail' item.category.food_names item.name %}" class="btn brand-button">View details</a>
+      <a href="{% url 'AddToCart' %}?product_id={{ item.id }}&product_qty=1" class="btn outline-button">Add to cart</a>
+    </div>
+  </div>
+</div>

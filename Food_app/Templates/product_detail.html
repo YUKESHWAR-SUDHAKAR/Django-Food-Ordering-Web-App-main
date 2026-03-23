@@ -1,0 +1,87 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="row g-4 align-items-stretch">
+    <div class="col-lg-6">
+      <img src="{{ item.display_image }}" alt="{{ item.name }}" class="detail-image">
+    </div>
+    <div class="col-lg-6">
+      <div class="surface-card p-4 p-lg-5 h-100">
+        {% csrf_token %}
+        <input type="hidden" id="productIdField" value="{{ item.id }}">
+        <span class="eyebrow"><i class="fa-solid fa-fire"></i> {{ item.category.food_names }}</span>
+        <h1 class="mt-3 mb-2">{{ item.name }}</h1>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <span class="status-pill">{{ item.veg_non_veg }}</span>
+          <span class="rating-pill"><i class="fa-solid fa-star text-warning"></i>{{ item.rating|floatformat:1 }}</span>
+          <span class="status-pill">{{ item.quantity }} in stock</span>
+        </div>
+        <p class="subtle fs-5">{{ item.item_description }}</p>
+        <div class="price-row mb-4">
+          <span class="old-price fs-5">Rs. {{ item.price|floatformat:0 }}</span>
+          <span class="new-price fs-3">Rs. {{ item.offer_price|floatformat:0 }}</span>
+        </div>
+        <div class="info-panel p-3 mb-4">
+          <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <strong>Delivery availability</strong>
+            <span class="subtle">{{ delivery_zone_count }} service zones configured</span>
+          </div>
+          <p class="subtle mb-0 mt-2">Choose delivery now or schedule it during checkout. Pincode checks run live before the order is placed.</p>
+        </div>
+        {% if item.quantity > 0 %}
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+          <div class="d-inline-flex align-items-center gap-2" data-product-qty>
+            <button class="btn outline-button" type="button" data-qty-change="down"><i class="fa-solid fa-minus"></i></button>
+            <input class="form-control text-center surface-input" id="productQtyField" type="number" min="1" max="10" value="1" style="width: 90px;">
+            <button class="btn outline-button" type="button" data-qty-change="up"><i class="fa-solid fa-plus"></i></button>
+          </div>
+          <button class="btn brand-button" type="button" id="productCartButton">Add to cart</button>
+          <button class="btn outline-button" type="button" id="productWishButton">Add to wishlist</button>
+        </div>
+        {% else %}
+        <div class="availability-banner unavailable">This item is currently sold out.</div>
+        {% endif %}
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'CategoryDetail' item.category.food_names %}" class="btn outline-button">Back to category</a>
+          <a href="{% url 'Cart' %}" class="btn outline-button">View cart</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if similar_items %}
+  <section class="mt-5">
+    <div class="section-header">
+      <div>
+        <h2 class="mb-1">More from {{ item.category.food_names }}</h2>
+        <p class="mb-0 subtle">Similar items in the same category.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for item in similar_items %}
+      <div class="col-md-6 col-xl-3">
+        {% include "includes/item_card.html" with item=item show_category=False %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+  {% if recommended_items %}
+  <section class="mt-5">
+    <div class="section-header">
+      <div>
+        <h2 class="mb-1">Recommended for you</h2>
+        <p class="mb-0 subtle">Suggestions based on customer interest and your browsing activity.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for item in recommended_items %}
+      <div class="col-md-6 col-xl-3">
+        {% include "includes/item_card.html" with item=item show_category=True %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

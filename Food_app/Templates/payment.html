@@ -1,0 +1,45 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="surface-card p-4 p-lg-5">
+        <span class="eyebrow"><i class="fa-solid fa-wallet"></i> Payment</span>
+        <h1 class="mt-3 mb-2">Complete payment for order #{{ order.id }}</h1>
+        <p class="subtle mb-4">This is a simplified payment flow for the project. Submitting below marks the payment as completed.</p>
+
+        <div class="summary-row">
+          <span>Amount</span>
+          <strong>Rs. {{ order.total_amount|floatformat:0 }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Method</span>
+          <strong>{{ payment.method }}</strong>
+        </div>
+        <div class="summary-row total">
+          <span>Current status</span>
+          <strong>{{ payment.status }}</strong>
+        </div>
+
+        <div class="info-panel p-3 mt-4">
+          {% if payment.method == "Cash on Delivery" %}
+          Cash on Delivery is enabled. Confirming here marks the collection step as ready for delivery.
+          {% else %}
+          Confirming here simulates a successful {{ payment.method }} payment and generates a transaction id automatically.
+          {% endif %}
+        </div>
+
+        <form method="post" class="mt-4">
+          {% csrf_token %}
+          <button class="btn brand-button w-100" type="submit" {% if payment.status == "Completed" or order.status == "Cancelled" %}disabled{% endif %}>
+            {% if payment.status == "Completed" %}Payment already completed{% elif order.status == "Cancelled" %}Order cancelled{% else %}Confirm payment{% endif %}
+          </button>
+        </form>
+
+        <a href="{% url 'order_detail' order.id %}" class="btn outline-button w-100 mt-3">Back to order</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

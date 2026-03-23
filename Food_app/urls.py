@@ -1,0 +1,37 @@
+from django.urls import path
+
+from . import app_views as views
+
+urlpatterns = [
+    path("", views.home, name="Home"),
+    path("register/", views.register, name="Register"),
+    path("login/", views.login_page, name="Login"),
+    path("logout/", views.logout_page, name="Logout"),
+    path("category/", views.category, name="Category"),
+    path("category/<str:name>/", views.categoryview, name="CategoryDetail"),
+    path("category/<str:name>/", views.categoryview, name="Category"),
+    path("category/<str:cname>/<str:pname>/", views.productdetail, name="Product_detail"),
+    path("addtocart/", views.add_to_cart, name="AddToCart"),
+    path("cart/", views.cart_page, name="Cart"),
+    path("cart/apply-coupon/", views.apply_coupon, name="ApplyCoupon"),
+    path("cart/remove-coupon/", views.remove_coupon, name="RemoveCoupon"),
+    path("removecart/<int:Cartid>/", views.remove_cart, name="RemoveCart"),
+    path("addtofav/", views.add_to_fav, name="AddToFav"),
+    path("favourite/", views.favourite_page, name="Favourite"),
+    path("removefav/<int:favid>/", views.remove_fav, name="RemoveFav"),
+    path("checkout/", views.checkout, name="Checkout"),
+    path("order/<int:order_id>/", views.order_detail, name="order_detail"),
+    path("order/<int:order_id>/cancel/", views.cancel_order, name="cancel_order"),
+    path("order/<int:order_id>/invoice/", views.invoice_detail, name="invoice_detail"),
+    path("order/<int:order_id>/invoice/pdf/", views.download_invoice_pdf, name="invoice_pdf"),
+    path("orders/", views.order_tracking, name="order_tracking"),
+    path("delivery/<int:order_id>/", views.delivery_tracking, name="delivery_tracking"),
+    path("payment/<int:order_id>/", views.payment_page, name="payment"),
+    path("profile/", views.profile_page, name="profile"),
+    path("notifications/", views.notifications_page, name="notifications"),
+    path("notifications/json/", views.notifications_json, name="notifications_json"),
+    path("notifications/read-all/", views.mark_all_notifications_read, name="notifications_read_all"),
+    path("search/", views.search_items, name="search"),
+    path("food/<str:category_type>/", views.filter_by_veg_nonveg, name="food_by_type"),
+    path("delivery-availability/", views.delivery_availability, name="delivery_availability"),
+]

@@ -1,0 +1,33 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-filter"></i> Filtered menu</span>
+      <h1 class="mt-3 mb-1">{{ category_type }} dishes</h1>
+      <p class="mb-0 subtle">Combine price and rating filters to narrow the results even further.</p>
+    </div>
+  </div>
+
+  {% if applied_filters %}
+  <div class="d-flex flex-wrap gap-2 mb-4">
+    {% for filter in applied_filters %}
+    <span class="filter-chip">{{ filter }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <div class="row g-4">
+    {% for item in items %}
+    <div class="col-md-6 col-xl-3">
+      {% include "includes/item_card.html" with item=item show_category=True %}
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="surface-card p-4 text-center">No {{ category_type|lower }} items match the selected filters right now.</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

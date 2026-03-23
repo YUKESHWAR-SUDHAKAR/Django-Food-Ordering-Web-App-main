@@ -1,0 +1,90 @@
+<nav class="navbar navbar-expand-xl site-navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand brand-mark" href="{% url 'Home' %}">
+      <span class="brand-pill">SS</span>
+      <span>
+        <strong>Foods Services</strong>
+        <small>Fresh delivery, smarter ordering</small>
+      </span>
+    </a>
+
+    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#siteNavbar" aria-controls="siteNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="siteNavbar">
+      <ul class="navbar-nav me-auto align-items-xl-center gap-xl-2">
+        <li class="nav-item"><a class="nav-link" href="{% url 'Home' %}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'Category' %}">Categories</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'food_by_type' 'Veg' %}">Veg</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'food_by_type' 'Non-Veg' %}">Non-Veg</a></li>
+        <li class="nav-item"><a class="nav-link" href="{% url 'food_by_type' 'Snacks' %}">Snacks</a></li>
+        {% if request.user.is_staff %}
+        <li class="nav-item"><a class="nav-link" href="{% url 'analytics_dashboard' %}">Analytics</a></li>
+        {% endif %}
+      </ul>
+
+      <form class="search-shell me-xl-3" method="get" action="{% url 'search' %}">
+        <input class="form-control" id="navSearchInput" type="search" name="q" value="{{ request.GET.q }}" placeholder="Search dishes, categories, ingredients">
+        <button class="btn icon-button" id="voiceSearchButton" type="button" aria-label="Search by voice">
+          <i class="fa-solid fa-microphone"></i>
+        </button>
+        <button class="btn brand-button" type="submit">Search</button>
+      </form>
+
+      <div class="nav-actions">
+        <button class="btn icon-button" id="themeToggle" type="button" aria-label="Toggle dark mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+
+        {% if request.user.is_authenticated %}
+        <div class="dropdown">
+          <button class="btn icon-button position-relative" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+            <i class="fa-regular fa-bell"></i>
+            <span class="notification-badge {% if not unread_notifications_count %}d-none{% endif %}" id="notificationBadge">{{ unread_notifications_count }}</span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end notification-menu p-0">
+            <div class="notification-menu-header">
+              <strong>Notifications</strong>
+              <a href="{% url 'notifications' %}" class="small">View all</a>
+            </div>
+            <div id="notificationList">
+              {% for notification in recent_notifications %}
+              <a class="notification-item {% if not notification.is_read %}notification-unread{% endif %}" href="{{ notification.link|default:'#' }}">
+                <strong>{{ notification.title }}</strong>
+                <span>{{ notification.message }}</span>
+              </a>
+              {% empty %}
+              <div class="notification-empty">No updates yet.</div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <a href="{% url 'Cart' %}" class="btn icon-button position-relative" aria-label="Cart">
+          <i class="fa-solid fa-bag-shopping"></i>
+          <span class="notification-badge cart-badge {% if not cart_count %}d-none{% endif %}">{{ cart_count }}</span>
+        </a>
+
+        <div class="dropdown">
+          <button class="btn account-button dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-regular fa-user"></i>
+            <span>{{ request.user.username }}</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+            <li><a class="dropdown-item" href="{% url 'Favourite' %}">Wishlist</a></li>
+            <li><a class="dropdown-item" href="{% url 'order_tracking' %}">Orders</a></li>
+            <li><a class="dropdown-item" href="{% url 'Checkout' %}">Checkout</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="{% url 'Logout' %}">Logout</a></li>
+          </ul>
+        </div>
+        {% else %}
+        <a href="{% url 'Login' %}" class="btn brand-button">Login</a>
+        <a href="{% url 'Register' %}" class="btn outline-button">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

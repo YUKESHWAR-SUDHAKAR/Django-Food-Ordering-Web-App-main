@@ -1,0 +1,82 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="hero-card mb-4">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-8">
+        <span class="eyebrow"><i class="fa-solid fa-utensils"></i> {{ category.food_names }}</span>
+        <h1 class="mt-3 mb-2">{{ category.food_names }} menu</h1>
+        <p class="mb-0 subtle">{{ category.description }}</p>
+      </div>
+      <div class="col-lg-4">
+        <img src="{{ category.display_image }}" alt="{{ category.food_names }}" class="detail-image">
+      </div>
+    </div>
+  </div>
+
+  <div class="surface-card p-4 p-lg-5 mb-4">
+    <form method="get" class="filter-form">
+      <div>
+        <label class="form-label">Food type</label>
+        <select class="form-select" name="veg" data-auto-submit>
+          <option value="">All</option>
+          <option value="Veg" {% if filter_state.veg == "Veg" %}selected{% endif %}>Veg</option>
+          <option value="Non-Veg" {% if filter_state.veg == "Non-Veg" %}selected{% endif %}>Non-Veg</option>
+          <option value="Snacks" {% if filter_state.veg == "Snacks" %}selected{% endif %}>Snacks</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Min price</label>
+        <input class="form-control" type="number" name="min_price" value="{{ filter_state.min_price }}">
+      </div>
+      <div>
+        <label class="form-label">Max price</label>
+        <input class="form-control" type="number" name="max_price" value="{{ filter_state.max_price }}">
+      </div>
+      <div>
+        <label class="form-label">Rating</label>
+        <select class="form-select" name="rating" data-auto-submit>
+          <option value="">Any</option>
+          <option value="3" {% if filter_state.rating == "3" %}selected{% endif %}>3+</option>
+          <option value="4" {% if filter_state.rating == "4" %}selected{% endif %}>4+</option>
+          <option value="4.5" {% if filter_state.rating == "4.5" %}selected{% endif %}>4.5+</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Sort</label>
+        <select class="form-select" name="sort" data-auto-submit>
+          <option value="featured" {% if filter_state.sort == "featured" %}selected{% endif %}>Featured</option>
+          <option value="price_asc" {% if filter_state.sort == "price_asc" %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_desc" {% if filter_state.sort == "price_desc" %}selected{% endif %}>Price: High to Low</option>
+          <option value="rating" {% if filter_state.sort == "rating" %}selected{% endif %}>Top Rated</option>
+          <option value="latest" {% if filter_state.sort == "latest" %}selected{% endif %}>Newest</option>
+        </select>
+      </div>
+      <div class="d-flex align-items-end gap-2">
+        <button class="btn brand-button w-100" type="submit">Apply</button>
+        <a class="btn outline-button" href="{% url 'CategoryDetail' category.food_names %}">Reset</a>
+      </div>
+    </form>
+    {% if applied_filters %}
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      {% for filter in applied_filters %}
+      <span class="filter-chip">{{ filter }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="row g-4">
+    {% for item in items %}
+    <div class="col-md-6 col-xl-3">
+      {% include "includes/item_card.html" with item=item show_category=False %}
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="surface-card p-4 text-center">No items match the current filters for this category.</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <h5>SS Foods Services</h5>
+        <p>Fresh meals, smarter checkout, quick support, and order tracking that feels modern on both desktop and mobile.</p>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <h6>Explore</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'Home' %}">Home</a></li>
+          <li><a href="{% url 'Category' %}">Categories</a></li>
+          <li><a href="{% url 'food_by_type' 'Veg' %}">Veg Menu</a></li>
+          <li><a href="{% url 'food_by_type' 'Non-Veg' %}">Non-Veg Menu</a></li>
+        </ul>
+      </div>
+      <div class="col-sm-6 col-lg-2">
+        <h6>Account</h6>
+        <ul class="footer-links">
+          <li><a href="{% url 'Cart' %}">Cart</a></li>
+          <li><a href="{% url 'order_tracking' %}">Orders</a></li>
+          <li><a href="{% url 'profile' %}">Profile</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3">
+        <h6>Contact</h6>
+        <ul class="footer-links">
+          <li><a href="mailto:info@ssfoods.com">info@ssfoods.com</a></li>
+          <li><a href="tel:+911234567890">+91 12345 67890</a></li>
+          <li>Main Street, Chennai</li>
+        </ul>
+      </div>
+    </div>
+    <div class="site-footer-bottom">
+      <span>Built for fast local ordering and smoother repeat purchases.</span>
+      <div class="footer-socials">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>

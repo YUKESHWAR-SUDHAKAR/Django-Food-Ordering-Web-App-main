@@ -1,0 +1,54 @@
+{% load static %}
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SS Foods Services</title>
+    <script>
+      (function () {
+        var savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="{% static 'CSS/style.css' %}" rel="stylesheet">
+  </head>
+  <body>
+    {% include "includes/navbar.html" %}
+    {% include "includes/message.html" %}
+    <main class="page-shell">
+      {% block content %}{% endblock %}
+    </main>
+    {% include "includes/footer.html" %}
+
+    <div class="floating-chat">
+      <button class="chat-toggle" type="button" id="chatToggle" aria-label="Open support chat">
+        <i class="fa-solid fa-comments"></i>
+      </button>
+      <div class="chat-panel d-none" id="chatPanel">
+        <div class="chat-header">
+          <strong>Quick Help</strong>
+          <button type="button" class="btn-close btn-close-white" id="chatClose" aria-label="Close"></button>
+        </div>
+        <div class="chat-body">
+          <p class="small text-secondary mb-3">Quick replies for the most common support questions.</p>
+          <button class="chat-chip" type="button" data-chat-reply="Most orders reach you in 30 to 45 minutes. You can also track the ETA from your Orders page.">Delivery time</button>
+          <button class="chat-chip" type="button" data-chat-reply="Apply a valid coupon from the cart page before checkout. Expired or inactive coupons are blocked automatically.">Coupon help</button>
+          <button class="chat-chip" type="button" data-chat-reply="Pending orders can be cancelled from the order details page. Confirmed or delivered orders cannot be cancelled.">Cancel order</button>
+          <a class="chat-chip whatsapp-chip" href="https://wa.me/911234567890" target="_blank" rel="noreferrer">Open WhatsApp</a>
+          <div class="chat-reply-box" id="chatReplyBox">Tap a reply to see the answer here.</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="{% static 'js/app.js' %}"></script>
+  </body>
+</html>

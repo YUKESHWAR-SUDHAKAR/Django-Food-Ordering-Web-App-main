@@ -1,0 +1,176 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="hero-card mb-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <span class="eyebrow"><i class="fa-solid fa-bolt"></i> Fast local delivery</span>
+        <h1 class="display-5 mt-3 mb-3">Fresh food ordering with coupons, recommendations, and smoother repeat checkout.</h1>
+        <p class="subtle fs-5 mb-4">Browse by category, filter by diet or price, save favorites, and track every order from one clean dashboard.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="{% url 'Category' %}" class="btn brand-button">Browse menu</a>
+          <a href="{% url 'Checkout' %}" class="btn outline-button">Go to checkout</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="subtle mb-1">Categories</div>
+            <strong class="fs-3">{{ categories|length }}</strong>
+          </div>
+          <div class="hero-stat">
+            <div class="subtle mb-1">Recommended picks</div>
+            <strong class="fs-3">{{ recommended_items|length }}</strong>
+          </div>
+          <div class="hero-stat">
+            <div class="subtle mb-1">Filters ready</div>
+            <strong class="fs-3">Diet, price, rating</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="surface-card p-4 p-lg-5 mb-5">
+    <div class="section-header">
+      <div>
+        <h2 class="mb-1">Explore smarter</h2>
+        <p class="mb-0">Combine filters and sorting to narrow down your next meal quickly.</p>
+      </div>
+    </div>
+    <form method="get" class="filter-form">
+      <div>
+        <label class="form-label">Veg / Non-Veg</label>
+        <select class="form-select" name="veg" data-auto-submit>
+          <option value="">All</option>
+          <option value="Veg" {% if filter_state.veg == "Veg" %}selected{% endif %}>Veg</option>
+          <option value="Non-Veg" {% if filter_state.veg == "Non-Veg" %}selected{% endif %}>Non-Veg</option>
+          <option value="Snacks" {% if filter_state.veg == "Snacks" %}selected{% endif %}>Snacks</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Min price</label>
+        <input class="form-control" type="number" name="min_price" value="{{ filter_state.min_price }}" placeholder="100">
+      </div>
+      <div>
+        <label class="form-label">Max price</label>
+        <input class="form-control" type="number" name="max_price" value="{{ filter_state.max_price }}" placeholder="500">
+      </div>
+      <div>
+        <label class="form-label">Minimum rating</label>
+        <select class="form-select" name="rating" data-auto-submit>
+          <option value="">Any</option>
+          <option value="3" {% if filter_state.rating == "3" %}selected{% endif %}>3+</option>
+          <option value="4" {% if filter_state.rating == "4" %}selected{% endif %}>4+</option>
+          <option value="4.5" {% if filter_state.rating == "4.5" %}selected{% endif %}>4.5+</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">Sort by</label>
+        <select class="form-select" name="sort" data-auto-submit>
+          <option value="featured" {% if filter_state.sort == "featured" %}selected{% endif %}>Featured</option>
+          <option value="price_asc" {% if filter_state.sort == "price_asc" %}selected{% endif %}>Price: Low to High</option>
+          <option value="price_desc" {% if filter_state.sort == "price_desc" %}selected{% endif %}>Price: High to Low</option>
+          <option value="rating" {% if filter_state.sort == "rating" %}selected{% endif %}>Top Rated</option>
+          <option value="latest" {% if filter_state.sort == "latest" %}selected{% endif %}>Newest</option>
+        </select>
+      </div>
+      <div class="d-flex align-items-end gap-2">
+        <button class="btn brand-button w-100" type="submit">Apply</button>
+        <a class="btn outline-button" href="{% url 'Home' %}">Reset</a>
+      </div>
+    </form>
+    {% if applied_filters %}
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      {% for filter in applied_filters %}
+      <span class="filter-chip">{{ filter }}</span>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  <section class="mb-5">
+    <div class="section-header">
+      <div>
+        <h2 class="mb-1">Popular categories</h2>
+        <p class="mb-0">Jump directly into the part of the menu you want.</p>
+      </div>
+      <a href="{% url 'Category' %}" class="outline-button">View all</a>
+    </div>
+    <div class="row g-4">
+      {% for category in categories|slice:":8" %}
+      <div class="col-6 col-md-4 col-xl-3">
+        <a class="category-card surface-card d-block" href="{% url 'CategoryDetail' category.food_names %}">
+          <img src="{{ category.display_image }}" alt="{{ category.food_names }}">
+          <div class="p-3">
+            <h5 class="mb-1">{{ category.food_names }}</h5>
+            <p class="subtle mb-0">{{ category.description|truncatewords:10 }}</p>
+          </div>
+        </a>
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="surface-card p-4 text-center">Add categories in the admin panel to populate the homepage.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="mb-5">
+    <div class="section-header">
+      <div>
+        <h2 class="mb-1">Filtered picks</h2>
+        <p class="mb-0">Results update with the filters you choose above.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for item in items %}
+      <div class="col-md-6 col-xl-3">
+        {% include "includes/item_card.html" with item=item show_category=True %}
+      </div>
+      {% empty %}
+      <div class="col-12">
+        <div class="surface-card p-4 text-center">No items match the current filters.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  {% if recommended_items %}
+  <section class="mb-5">
+    <div class="section-header">
+      <div>
+        <h2 class="mb-1">Recommended for you</h2>
+        <p class="mb-0">Suggestions based on popular menu items and your activity.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for item in recommended_items %}
+      <div class="col-md-6 col-xl-3">
+        {% include "includes/item_card.html" with item=item show_category=True %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  {% if new_items %}
+  <section>
+    <div class="section-header">
+      <div>
+        <h2 class="mb-1">New on the menu</h2>
+        <p class="mb-0">Recently added items worth a look.</p>
+      </div>
+    </div>
+    <div class="row g-4">
+      {% for item in new_items %}
+      <div class="col-md-6 col-xl-3">
+        {% include "includes/item_card.html" with item=item show_category=True %}
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+</section>
+{% endblock %}

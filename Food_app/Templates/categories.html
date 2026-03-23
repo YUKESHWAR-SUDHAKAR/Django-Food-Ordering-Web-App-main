@@ -1,0 +1,33 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-layer-group"></i> Categories</span>
+      <h1 class="mt-3 mb-1">Browse the full menu by category</h1>
+      <p class="mb-0 subtle">Each section groups similar dishes so customers can jump straight to what they want.</p>
+    </div>
+  </div>
+  <div class="row g-4">
+    {% for item in categories %}
+    <div class="col-sm-6 col-lg-4 col-xl-3">
+      <a class="category-card surface-card d-block h-100" href="{% url 'CategoryDetail' item.food_names %}">
+        <img src="{{ item.display_image }}" alt="{{ item.food_names }}">
+        <div class="p-3 p-lg-4">
+          <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+            <h5 class="mb-0">{{ item.food_names }}</h5>
+            <span class="status-pill">{{ item.item_count }} items</span>
+          </div>
+          <p class="subtle mb-0">{{ item.description|truncatewords:16 }}</p>
+        </div>
+      </a>
+    </div>
+    {% empty %}
+    <div class="col-12">
+      <div class="surface-card p-4 text-center">No categories are available yet.</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

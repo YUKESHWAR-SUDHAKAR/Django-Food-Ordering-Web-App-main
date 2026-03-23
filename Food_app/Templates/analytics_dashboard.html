@@ -1,0 +1,73 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-chart-column"></i> Admin analytics</span>
+      <h1 class="mt-3 mb-1">Store performance snapshot</h1>
+      <p class="mb-0 subtle">A lightweight admin dashboard for total orders, revenue, top items, and daily sales.</p>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="surface-card p-4">
+        <div class="subtle mb-1">Total orders</div>
+        <h2 class="mb-0">{{ total_orders }}</h2>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="surface-card p-4">
+        <div class="subtle mb-1">Revenue</div>
+        <h2 class="mb-0">Rs. {{ revenue|floatformat:0 }}</h2>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="surface-card p-4">
+        <div class="subtle mb-1">Top items tracked</div>
+        <h2 class="mb-0">{{ top_items|length }}</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-6">
+      <div class="surface-card p-4 p-lg-5">
+        <h3 class="mb-4">Top items</h3>
+        <div class="stack-grid">
+          {% for item in top_items %}
+          <div class="d-flex justify-content-between gap-3 border-bottom pb-3">
+            <div>
+              <strong>{{ item.item__name }}</strong>
+              <div class="subtle">{{ item.total_qty }} orders</div>
+            </div>
+            <strong>Rs. {{ item.revenue|floatformat:0 }}</strong>
+          </div>
+          {% empty %}
+          <div class="subtle">No order data yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="surface-card p-4 p-lg-5">
+        <h3 class="mb-4">Daily sales</h3>
+        <div class="stack-grid">
+          {% for day in daily_sales %}
+          <div>
+            <div class="d-flex justify-content-between mb-2">
+              <span>{{ day.label }}</span>
+              <strong>Rs. {{ day.value|floatformat:0 }}</strong>
+            </div>
+            <div class="progress" style="height: 10px;">
+              <div class="progress-bar" role="progressbar" style="width: {{ day.value }}%; background: linear-gradient(135deg, var(--brand), var(--accent));"></div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

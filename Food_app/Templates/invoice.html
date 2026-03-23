@@ -1,0 +1,60 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-file-invoice"></i> {{ invoice.invoice_number }}</span>
+      <h1 class="mt-3 mb-1">Invoice</h1>
+      <p class="mb-0 subtle">Stored invoice history for order #{{ order.id }} with a downloadable PDF version.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{% url 'invoice_pdf' order.id %}" class="btn brand-button">Download PDF</a>
+      <a href="{% url 'order_detail' order.id %}" class="btn outline-button">Back to order</a>
+    </div>
+  </div>
+
+  <div class="surface-card p-4 p-lg-5">
+    <div class="row g-4 mb-4">
+      <div class="col-md-6">
+        <h4 class="mb-2">Billing details</h4>
+        <p class="mb-1"><strong>Order ID:</strong> #{{ order.id }}</p>
+        <p class="mb-1"><strong>Customer:</strong> {{ order.user.username }}</p>
+        <p class="mb-0"><strong>Date:</strong> {{ invoice.generated_at|date:"d M Y, h:i A" }}</p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <h4 class="mb-2">Delivery</h4>
+        <p class="mb-1">{{ delivery.address }}</p>
+        <p class="mb-0">Pincode: {{ delivery.pincode }}</p>
+      </div>
+    </div>
+
+    <div class="stack-grid">
+      {% for item in order_items %}
+      <div class="d-flex justify-content-between gap-3 border-bottom pb-3">
+        <div>
+          <strong>{{ item.item.name }}</strong>
+          <div class="subtle">{{ item.quantity }} x Rs. {{ item.price|floatformat:0 }}</div>
+        </div>
+        <strong>Rs. {{ item.line_total|floatformat:0 }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-4">
+      <div class="summary-row">
+        <span>Subtotal</span>
+        <strong>Rs. {{ order.subtotal_amount|floatformat:0 }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Discount</span>
+        <strong>- Rs. {{ order.discount_amount|floatformat:0 }}</strong>
+      </div>
+      <div class="summary-row total">
+        <span>Total</span>
+        <strong>Rs. {{ order.total_amount|floatformat:0 }}</strong>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

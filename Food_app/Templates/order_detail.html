@@ -1,0 +1,121 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+<section class="container py-4 py-lg-5">
+  <div class="section-header">
+    <div>
+      <span class="eyebrow"><i class="fa-solid fa-receipt"></i> Order #{{ order.id }}</span>
+      <h1 class="mt-3 mb-1">Order details</h1>
+      <p class="mb-0 subtle">Review the invoice breakdown, delivery slot, payment status, and cancellation eligibility.</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+      <a href="{% url 'invoice_detail' order.id %}" class="btn outline-button">Invoice</a>
+      <a href="{% url 'invoice_pdf' order.id %}" class="btn brand-button">Download PDF</a>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="surface-card p-4 p-lg-5 mb-4">
+        <div class="d-flex flex-wrap justify-content-between gap-3 mb-4">
+          <div>
+            <h3 class="mb-1">Order summary</h3>
+            <p class="subtle mb-0">{{ order.created_at|date:"d M Y, h:i A" }}</p>
+          </div>
+          <span class="status-pill">{{ order.status }}</span>
+        </div>
+        <div class="stack-grid">
+          {% for item in order_items %}
+          <div class="d-flex justify-content-between gap-3 border-bottom pb-3">
+            <div>
+              <strong>{{ item.item.name }}</strong>
+              <div class="subtle">{{ item.quantity }} x Rs. {{ item.price|floatformat:0 }}</div>
+            </div>
+            <strong>Rs. {{ item.line_total|floatformat:0 }}</strong>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="mt-4">
+          <div class="summary-row">
+            <span>Subtotal</span>
+            <strong>Rs. {{ order.subtotal_amount|floatformat:0 }}</strong>
+          </div>
+          <div class="summary-row">
+            <span>Discount</span>
+            <strong>- Rs. {{ order.discount_amount|floatformat:0 }}</strong>
+          </div>
+          <div class="summary-row total">
+            <span>Total paid</span>
+            <strong>Rs. {{ order.total_amount|floatformat:0 }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="surface-card p-4 p-lg-5">
+        <h3 class="mb-3">Delivery details</h3>
+        <div class="summary-row">
+          <span>Address</span>
+          <strong class="text-end">{{ delivery.address }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Pincode</span>
+          <strong>{{ delivery.pincode }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Delivery slot</span>
+          <strong>{{ order.delivery_slot }}</strong>
+        </div>
+        {% if order.scheduled_for %}
+        <div class="summary-row">
+          <span>Scheduled for</span>
+          <strong>{{ order.scheduled_for|date:"d M Y, h:i A" }}</strong>
+        </div>
+        {% endif %}
+        {% if delivery.estimated_time %}
+        <div class="summary-row total">
+          <span>Estimated arrival</span>
+          <strong>{{ delivery.estimated_time|date:"d M Y, h:i A" }}</strong>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="summary-card p-4 p-lg-5 mb-4">
+        <h3 class="mb-4">Payment</h3>
+        <div class="summary-row">
+          <span>Method</span>
+          <strong>{{ payment.method }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Status</span>
+          <strong>{{ payment.status }}</strong>
+        </div>
+        {% if payment.transaction_id %}
+        <div class="summary-row total">
+          <span>Transaction</span>
+          <strong>{{ payment.transaction_id }}</strong>
+        </div>
+        {% endif %}
+        {% if payment.status == "Pending" and order.status != "Cancelled" %}
+        <a href="{% url 'payment' order.id %}" class="btn brand-button w-100 mt-4">Complete payment</a>
+        {% endif %}
+      </div>
+
+      <div class="summary-card p-4 p-lg-5">
+        <h3 class="mb-4">Quick actions</h3>
+        <div class="stack-grid">
+          <a href="{% url 'delivery_tracking' order.id %}" class="btn outline-button">Track delivery</a>
+          <a href="{% url 'order_tracking' %}" class="btn outline-button">Back to orders</a>
+          {% if order.status == "Pending" %}
+          <form method="post" action="{% url 'cancel_order' order.id %}">
+            {% csrf_token %}
+            <button class="btn btn-danger w-100" type="submit">Cancel pending order</button>
+          </form>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
